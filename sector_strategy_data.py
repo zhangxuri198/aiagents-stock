@@ -302,6 +302,7 @@ class SectorStrategyDataFetcher:
         # 优先使用Tushare获取沪深港通资金流向
         self.ts_pro = None
         tushare_token = os.getenv('TUSHARE_TOKEN', '')
+        tushare_http_url = os.getenv('TUSHARE_HTTP_URL', '')
         try:
             # 初始化Tushare（如果尚未初始化）
             if not hasattr(self, '_tushare_api'):
@@ -309,8 +310,13 @@ class SectorStrategyDataFetcher:
                 if TUSHARE_TOKEN:
                     try:
                         import tushare as ts
-                        ts.set_token(tushare_token)
-                        self.ts_pro = ts.pro_api()
+                        if tushare_http_url:
+                            ts._DataApi__token = tushare_token
+                            ts._DataApi__http_url = tushare_http_url
+                            self.ts_pro = ts.pro_api(tushare_token)
+                        else:
+                            ts.set_token(tushare_token)
+                            self.ts_pro = ts.pro_api()
                         print("    [Tushare] ✅ 初始化成功")
                     except Exception as e:
                         print(f"    [Tushare] 初始化失败: {e}")
