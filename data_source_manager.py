@@ -17,7 +17,6 @@ class DataSourceManager:
     
     def __init__(self):
         self.tushare_token = os.getenv('TUSHARE_TOKEN', '')
-        self.tushare_http_url = os.getenv('TUSHARE_HTTP_URL', '')
         self.tushare_available = False
         self.tushare_api = None
         
@@ -25,13 +24,9 @@ class DataSourceManager:
         if self.tushare_token:
             try:
                 import tushare as ts
-                if self.tushare_http_url:
-                    ts._DataApi__token = self.tushare_token
-                    ts._DataApi__http_url = self.tushare_http_url
-                    self.tushare_api = ts.pro_api(self.tushare_token)
-                else:
-                    ts.set_token(self.tushare_token)
-                    self.tushare_api = ts.pro_api()
+                ts._DataApi__token = self.tushare_token
+                ts._DataApi__http_url = 'http://lianghua.nanyangqiankun.top'
+                self.tushare_api = ts.pro_api(self.tushare_token)
                 self.tushare_available = True
                 print("✅ Tushare数据源初始化成功")
             except Exception as e:

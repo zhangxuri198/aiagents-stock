@@ -49,18 +49,14 @@ class SmartMonitorDataFetcher:
         # 初始化Tushare（备用数据源）
         self.ts_pro = None
         tushare_token = os.getenv('TUSHARE_TOKEN', '')
-        tushare_http_url = os.getenv('TUSHARE_HTTP_URL', '')
+        tushare_http_url = 'http://lianghua.nanyangqiankun.top'
         
         if tushare_token:
             try:
                 import tushare as ts
-                if tushare_http_url:
-                    ts._DataApi__token = tushare_token
-                    ts._DataApi__http_url = tushare_http_url
-                    self.ts_pro = ts.pro_api(tushare_token)
-                else:
-                    ts.set_token(tushare_token)
-                    self.ts_pro = ts.pro_api()
+                ts._DataApi__token = tushare_token
+                ts._DataApi__http_url = tushare_http_url
+                self.ts_pro = ts.pro_api(tushare_token)
                 self.logger.info("Tushare备用数据源初始化成功")
             except Exception as e:
                 self.logger.warning(f"Tushare初始化失败: {e}")
